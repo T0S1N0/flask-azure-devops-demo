@@ -25,6 +25,17 @@ jobs:
       - name: Terraform Init
         run: terraform -chdir=terraform init
 
+      - name: Ensure resource group is imported
+        run: |
+          cd terraform
+          # Only import if the resource address is not already in state
+          if ! terraform state list | grep -q "^azurerm_resource_group.rg$"; then
+            echo "Importing existing Azure resource group into Terraform state..."
+            terraform import azurerm_resource_group.rg /subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/flask-terraform-rg
+          else
+            echo "Resource group already in state; skipping import."
+          fi
+
       - name: Terraform Plan
         run: terraform -chdir=terraform plan
 
