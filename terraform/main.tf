@@ -11,26 +11,25 @@ resource "azurerm_resource_group" "rg" {
   location = "East US"
 }
 
-resource "azurerm_app_service_plan" "asp" {
+resource "azurerm_service_plan" "asp" {
   name                = "flask-terraform-asp"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  sku {
-    tier = "Free"
-    size = "F1"
-  }
+  sku_name            = "F1"
+  os_type             = "Linux"
 }
 
-resource "azurerm_app_service" "app" {
+resource "azurerm_linux_web_app" "app" {
   name                = "flask-terraform-app"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  app_service_plan_id = azurerm_app_service_plan.asp.id
+  service_plan_id     = azurerm_service_plan.asp.id
+
   site_config {
-    python_version = "3.10"
+    linux_fx_version = "PYTHON|3.10"
   }
 }
 
 output "app_service_default_site_hostname" {
-  value = azurerm_app_service.app.default_site_hostname
+  value = azurerm_linux_web_app.app.default_site_hostname
 }
