@@ -8,7 +8,7 @@ variable "location" {
 
 resource "azurerm_resource_group" "rg" {
   name     = "flask-terraform-rg"
-  location = "East US"
+  location = "Spain Central"
 }
 
 resource "azurerm_service_plan" "asp" {
